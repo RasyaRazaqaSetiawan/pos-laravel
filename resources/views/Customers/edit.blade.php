@@ -109,24 +109,6 @@
                             <p class="mt-1 text-xs text-gray-500">Format: 08xxxxxxxxxx</p>
                         </div>
 
-                        <!-- Customer Stats -->
-                        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                            <h4 class="mb-3 text-sm font-medium text-gray-700">Customer Statistics</h4>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-blue-600">{{ $customer->transactions_count }}
-                                    </div>
-                                    <div class="text-xs text-gray-500">Total Transactions</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-2xl font-bold text-green-600">
-                                        {{ $customer->created_at?->format('M Y')}}
-                                    </div>
-                                    <div class="text-xs text-gray-500">Customer Since</div>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Submit Buttons -->
                         <div class="flex gap-4 pt-4">
                             <button type="submit"

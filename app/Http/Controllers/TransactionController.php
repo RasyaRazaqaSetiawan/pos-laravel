@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Testing\Fluent\Concerns\Has;
 
 class TransactionController extends Controller
 {
@@ -35,6 +36,7 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search');
+        $date = $request->get('date');
 
         $transactions = Transaction::when($search, function ($query) use ($search) {
             return $query->where('id', 'like', '%' . $search . '%')
@@ -46,8 +48,13 @@ class TransactionController extends Controller
                     $userQuery->where('name', 'like', "%{$search}%");
                 });
         })
+            ->when($date, function ($query) use ($date) {
+                // Filter berdasarkan tanggal (hari dalam bulan)
+                return $query->whereDay('created_at', $date);
+            })
             ->with(['user', 'customer', 'items'])
             ->paginate(10);
+
         return view('Transactions.index', compact('transactions'));
     }
 

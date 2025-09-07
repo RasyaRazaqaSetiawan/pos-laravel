@@ -1,12 +1,11 @@
 # Aplikasi Kasir (Point of Sales) - Mini Project
 
 Aplikasi ini adalah mini project **Point of Sale (POS)** sederhana yang digunakan untuk mencatat transaksi penjualan, mengelola produk dan pelanggan, serta menghitung diskon otomatis berdasarkan total belanja.  
-Project ini dibangun menggunakan **Laravel 12**, **Alpine Js**, **TailwindCSS**, dan **MySQL**.
+Project ini dibangun menggunakan **Laravel 12**, **TailwindCSS**, dan **MySQL**.
 
 ## Tech Stack
 
 - Laravel 11.x
-- Alpine Js
 - TailwindCSS
 - MySQL
 

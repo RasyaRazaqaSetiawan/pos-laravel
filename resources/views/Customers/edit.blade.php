@@ -71,10 +71,10 @@
                         <!-- Email -->
                         <div>
                             <label for="email" class="mb-2 block text-sm font-medium text-gray-700">
-                                Email Address <span class="text-red-500">*</span>
+                                Email Address (Optional) <span class="text-red-500">*</span>
                             </label>
                             <input type="email" name="email" id="email"
-                                value="{{ old('email', $customer->email) }}" required
+                                value="{{ old('email', $customer->email) }}"
                                 class="@error('email') border-red-500 @enderror w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                 placeholder="customer@example.com">
                             @error('email')
@@ -192,18 +192,11 @@
                 return false;
             }
 
-            // Basic email validation
-            if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                e.preventDefault();
-                alert('Please enter a valid email address');
-                return false;
-            }
-
             // Confirm changes if customer has transactions
             @if ($customer->transactions_count > 0)
                 if (!confirm(
                         'This customer has transaction history. Are you sure you want to update their information?'
-                        )) {
+                    )) {
                     e.preventDefault();
                     return false;
                 }

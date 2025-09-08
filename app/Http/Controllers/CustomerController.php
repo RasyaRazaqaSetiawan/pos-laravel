@@ -39,12 +39,19 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'full_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|unique:customers,email',
+            'full_name' => 'required|string|max:255|unique:customers,full_name',
+            'phone' => 'required|string|max:20|unique:customers,phone',
+            'email' => 'nullable|email|unique:customers,email',
         ]);
 
         Customer::create($request->all());
+
+        // if($request->ajax()){
+        //     return response()->json([
+        //         'sucess' => true,
+        //         'message' => 'Customer created successfully'
+        //     ]);
+        // }
 
         return redirect()->route('customers.index')->with('success', 'Customer created successfully');
     }
@@ -65,7 +72,7 @@ class CustomerController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
-            'email' => 'required|email|unique:customers,email,' . $customer->id,
+            'email' => 'nullable|email|unique:customers,email,' . $customer->id,
         ]);
 
         $customer->update($validated);

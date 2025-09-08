@@ -23,8 +23,9 @@
                             <label for="full_name" class="mb-2 block text-sm font-medium text-gray-700">
                                 Full Name <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" name="full_name" id="full_name" value="{{ old('full_name') }}" required
-                                class="@error('full_name') border-red-500 @enderror w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                            <input type="text" name="full_name" id="full_name" value="{{ old('full_name') }}"
+                                required
+                                class="@error('full_name') border-red-500 @enderror w-full rounded-lg border px-4 py-3 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                 placeholder="Enter customer full name">
                             @error('full_name')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -34,10 +35,10 @@
                         <!-- Email -->
                         <div>
                             <label for="email" class="mb-2 block text-sm font-medium text-gray-700">
-                                Email Address <span class="text-red-500">*</span>
+                                Email Address (Optional) <span class="text-red-500">*</span>
                             </label>
-                            <input type="email" name="email" id="email" value="{{ old('email') }}" required
-                                class="@error('email') border-red-500 @enderror w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                            <input type="email" name="email" id="email" value="{{ old('email') }}"
+                                class="@error('email') border-red-500 @enderror w-full rounded-lg border px-4 py-3 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                 placeholder="customer@example.com">
                             @error('email')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -51,7 +52,7 @@
                             </label>
                             <div class="flex gap-2">
                                 <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" required
-                                    class="@error('phone') border-red-500 @enderror flex-1 rounded-lg border border-gray-300 px-4 py-3 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                                    class="@error('phone') border-red-500 @enderror flex-1 rounded-lg border px-4 py-3 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                     placeholder="08xxxxxxxxxx" oninput="formatPhoneNumber(this)">
                             </div>
                             @error('phone')
@@ -111,8 +112,7 @@
             // Otherwise, assume it's Indonesian number starting with 8
             else if (value.startsWith('8')) {
                 input.value = '0' + value;
-            }
-            else {
+            } else {
                 input.value = value;
             }
         }
@@ -120,7 +120,6 @@
         // Validate form before submission
         document.querySelector('form').addEventListener('submit', function(e) {
             const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
 
             // Basic phone validation
             if (phone && !phone.match(/^(\+62|0)[0-9]{8,12}$/)) {

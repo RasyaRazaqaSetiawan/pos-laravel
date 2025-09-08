@@ -39,7 +39,8 @@
                                         <div id="product-{{ $product->id }}"
                                             class="product-card cursor-pointer rounded-lg border bg-white p-4 shadow-sm transition hover:shadow-md"
                                             data-id="{{ $product->id }}" data-name="{{ $product->name }}"
-                                            data-price="{{ $product->price }}" data-stock="{{ $product->stock }}">
+                                            data-price="{{ $product->price }}" data-stock="{{ $product->stock }}"
+                                            data-original-stock="{{ $product->stock }}">
 
                                             <div class="text-center">
                                                 <!-- Icon -->
@@ -60,7 +61,13 @@
                                                 <p class="text-sm font-bold text-blue-600">
                                                     Rp {{ number_format($product->price, 0, ',', '.') }}
                                                 </p>
-                                                <p class="text-xs text-gray-500">Stock: {{ $product->stock }}</p>
+                                                <p class="stock-display text-xs text-gray-500">
+                                                    Stock: <span class="stock-number">{{ $product->stock }}</span>
+                                                </p>
+                                                <!-- Out of Stock Overlay -->
+                                                <div class="out-of-stock-overlay hidden absolute inset-0 bg-gray-900 bg-opacity-50 rounded-lg flex items-center justify-center">
+                                                    <span class="text-white text-sm font-bold">OUT OF STOCK</span>
+                                                </div>
                                             </div>
                                         </div>
                                     @endforeach
@@ -148,6 +155,18 @@
         let cart = [];
         let itemCounter = 0;
 
+        // Store original stock for each product
+        let originalStock = {};
+
+        // Initialize original stock data
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.product-card').forEach(card => {
+                const productId = card.dataset.id;
+                const stock = parseInt(card.dataset.originalStock);
+                originalStock[productId] = stock;
+            });
+        });
+
         // Product search functionality
         document.getElementById('product-search').addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
@@ -169,14 +188,22 @@
                 const productId = this.dataset.id;
                 const productName = this.dataset.name;
                 const productPrice = parseInt(this.dataset.price);
-                const productStock = parseInt(this.dataset.stock);
+                const currentStock = parseInt(this.dataset.stock);
+
+                // Check if product is out of stock
+                if (currentStock <= 0) {
+                    alert('Product is out of stock!');
+                    return;
+                }
 
                 // Check if product already in cart
                 const existingItem = cart.find(item => item.product_id === productId);
 
                 if (existingItem) {
-                    if (existingItem.quantity < productStock) {
+                    if (existingItem.quantity < currentStock) {
                         existingItem.quantity += 1;
+                        // Update stock display
+                        updateProductStock(productId, currentStock - 1);
                         updateCartDisplay();
                     } else {
                         alert('Insufficient stock!');
@@ -187,12 +214,64 @@
                         name: productName,
                         price: productPrice,
                         quantity: 1,
-                        stock: productStock
+                        stock: currentStock
                     });
+                    // Update stock display
+                    updateProductStock(productId, currentStock - 1);
                     updateCartDisplay();
                 }
             });
         });
+
+        // Update product stock display
+        function updateProductStock(productId, newStock) {
+            const productCard = document.getElementById(`product-${productId}`);
+            const stockNumberElement = productCard.querySelector('.stock-number');
+            const outOfStockOverlay = productCard.querySelector('.out-of-stock-overlay');
+
+            // Update data attribute
+            productCard.dataset.stock = newStock;
+
+            // Update display
+            stockNumberElement.textContent = newStock;
+
+            // Handle out of stock state
+            if (newStock <= 0) {
+                productCard.classList.add('opacity-50', 'cursor-not-allowed');
+                productCard.classList.remove('hover:shadow-md', 'cursor-pointer');
+                stockNumberElement.parentElement.classList.add('text-red-500');
+                stockNumberElement.parentElement.classList.remove('text-gray-500');
+                if (outOfStockOverlay) {
+                    outOfStockOverlay.classList.remove('hidden');
+                }
+            } else {
+                productCard.classList.remove('opacity-50', 'cursor-not-allowed');
+                productCard.classList.add('hover:shadow-md', 'cursor-pointer');
+                stockNumberElement.parentElement.classList.remove('text-red-500');
+                stockNumberElement.parentElement.classList.add('text-gray-500');
+                if (outOfStockOverlay) {
+                    outOfStockOverlay.classList.add('hidden');
+                }
+            }
+
+            // Update stock color based on quantity
+            if (newStock <= 5 && newStock > 0) {
+                stockNumberElement.parentElement.classList.add('text-orange-500');
+                stockNumberElement.parentElement.classList.remove('text-gray-500');
+            } else if (newStock > 5) {
+                stockNumberElement.parentElement.classList.add('text-gray-500');
+                stockNumberElement.parentElement.classList.remove('text-orange-500');
+            }
+        }
+
+        // Restore product stock display
+        function restoreProductStock(productId, quantityToRestore) {
+            const productCard = document.getElementById(`product-${productId}`);
+            const currentStock = parseInt(productCard.dataset.stock);
+            const newStock = currentStock + quantityToRestore;
+
+            updateProductStock(productId, newStock);
+        }
 
         // Update cart display
         function updateCartDisplay() {
@@ -221,10 +300,10 @@
                         <p class="text-xs text-gray-500">Rp ${item.price.toLocaleString()}</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button type="button" onclick="updateQuantity(${index}, -1)" class="w-6 h-6 bg-gray-200 rounded text-xs">-</button>
+                        <button type="button" onclick="updateQuantity(${index}, -1)" class="w-6 h-6 bg-gray-200 rounded text-xs hover:bg-gray-300">-</button>
                         <span class="text-sm font-medium w-8 text-center">${item.quantity}</span>
-                        <button type="button" onclick="updateQuantity(${index}, 1)" class="w-6 h-6 bg-gray-200 rounded text-xs">+</button>
-                        <button type="button" onclick="removeItem(${index})" class="w-6 h-6 bg-red-500 text-white rounded text-xs">×</button>
+                        <button type="button" onclick="updateQuantity(${index}, 1)" class="w-6 h-6 bg-gray-200 rounded text-xs hover:bg-gray-300">+</button>
+                        <button type="button" onclick="removeItem(${index})" class="w-6 h-6 bg-red-500 text-white rounded text-xs hover:bg-red-600">×</button>
                     </div>
                     <input type="hidden" name="items[${index}][product_id]" value="${item.product_id}">
                     <input type="hidden" name="items[${index}][quantity]" value="${item.quantity}">
@@ -242,19 +321,37 @@
         function updateQuantity(index, change) {
             const item = cart[index];
             const newQuantity = item.quantity + change;
+            const productCard = document.getElementById(`product-${item.product_id}`);
+            const currentStock = parseInt(productCard.dataset.stock);
 
-            if (newQuantity > 0 && newQuantity <= item.stock) {
-                item.quantity = newQuantity;
-                updateCartDisplay();
-            } else if (newQuantity <= 0) {
-                removeItem(index);
-            } else {
-                alert('Insufficient stock!');
+            if (change > 0) {
+                // Increasing quantity - check available stock
+                if (currentStock > 0) {
+                    item.quantity = newQuantity;
+                    updateProductStock(item.product_id, currentStock - 1);
+                    updateCartDisplay();
+                } else {
+                    alert('Insufficient stock!');
+                }
+            } else if (change < 0) {
+                if (newQuantity > 0) {
+                    // Decreasing quantity - restore stock
+                    item.quantity = newQuantity;
+                    restoreProductStock(item.product_id, 1);
+                    updateCartDisplay();
+                } else {
+                    // Remove item completely
+                    removeItem(index);
+                }
             }
         }
 
         // Remove item from cart
         function removeItem(index) {
+            const item = cart[index];
+            // Restore all stock for this item
+            restoreProductStock(item.product_id, item.quantity);
+
             cart.splice(index, 1);
             updateCartDisplay();
         }
@@ -295,10 +392,22 @@
         // Clear cart
         document.getElementById('clear-cart').addEventListener('click', function() {
             if (confirm('Are you sure you want to clear the cart?')) {
+                // Restore all stock before clearing cart
+                cart.forEach(item => {
+                    restoreProductStock(item.product_id, item.quantity);
+                });
+
                 cart = [];
                 updateCartDisplay();
             }
         });
+
+        // Reset all stock to original values
+        function resetAllStock() {
+            Object.keys(originalStock).forEach(productId => {
+                updateProductStock(productId, originalStock[productId]);
+            });
+        }
 
         // Customer selection change
         document.getElementById('customer_id').addEventListener('change', updateCheckoutButton);
@@ -317,5 +426,67 @@
                 return;
             }
         });
+
+        // Page unload warning if cart has items
+        window.addEventListener('beforeunload', function(e) {
+            if (cart.length > 0) {
+                const confirmationMessage = 'You have items in your cart. Are you sure you want to leave?';
+                e.returnValue = confirmationMessage;
+                return confirmationMessage;
+            }
+        });
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Clear cart with Ctrl+X
+            if (e.ctrlKey && e.key === 'x') {
+                e.preventDefault();
+                document.getElementById('clear-cart').click();
+            }
+
+            // Focus search with Ctrl+F
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                document.getElementById('product-search').focus();
+            }
+        });
     </script>
+
+    <style>
+        .product-card {
+            position: relative;
+        }
+
+        .out-of-stock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+        }
+
+        /* Animation for stock changes */
+        .stock-number {
+            transition: color 0.3s ease;
+        }
+
+        .product-card {
+            transition: opacity 0.3s ease, transform 0.2s ease;
+        }
+
+        .product-card:hover:not(.cursor-not-allowed) {
+            transform: translateY(-2px);
+        }
+
+        /* Low stock warning animation */
+        @keyframes pulse-orange {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .text-orange-500 {
+            animation: pulse-orange 2s infinite;
+        }
+    </style>
 </x-app-layout>

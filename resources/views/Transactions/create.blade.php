@@ -25,15 +25,25 @@
 
                             <!-- Customer Section -->
                             <div>
-                                <div class="mb-4 flex items-center gap-2">
-                                    <svg class="h-5 w-5 text-gray-700" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                        </path>
-                                    </svg>
-                                    <h2 class="text-xl font-bold text-gray-900">Customer</h2>
+                                <div class="mb-4 flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="h-5 w-5 text-gray-700" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                            </path>
+                                        </svg>
+                                        <h2 class="text-xl font-bold text-gray-900">Customer</h2>
+                                    </div>
+
+                                    <!-- Add Customer Button -->
+                                    <button type="button"
+                                        onclick="document.getElementById('addCustomerModal').classList.remove('hidden')"
+                                        class="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700">
+                                        + Add Customer
+                                    </button>
                                 </div>
+
                                 <div class="relative">
                                     <input type="text" id="customer-search" placeholder="Search customer..."
                                         class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-gray-900 placeholder-gray-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
@@ -44,6 +54,7 @@
                                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                         </svg>
                                     </div>
+
                                     <select name="customer_id" id="customer_id" class="hidden">
                                         <option value="">Select Customer</option>
                                         @foreach ($customers as $customer)
@@ -78,6 +89,7 @@
                                     </div>
                                 </div>
                             </div>
+
 
                             <!-- Add Products Section -->
                             <div>
@@ -205,6 +217,33 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Add Customer -->
+    <div id="addCustomerModal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50">
+        <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+            <h3 class="mb-4 text-lg font-bold">Add New Customer</h3>
+
+            <!-- FORM TERPISAH, BUKAN DALAM transactionForm -->
+            <form id="customerForm" action="{{ route('customers.store') }}" method="POST">
+                @csrf
+                <div class="space-y-3">
+                    <input type="text" name="full_name" placeholder="Full Name" required
+                        class="w-full rounded border px-3 py-2">
+                    <input type="text" name="phone" placeholder="Phone" required
+                        class="w-full rounded border px-3 py-2">
+                    <input type="email" name="email" placeholder="Email (optional)"
+                        class="w-full rounded border px-3 py-2">
+                </div>
+
+                <div class="mt-4 flex justify-end gap-2">
+                    <button type="button"
+                        onclick="document.getElementById('addCustomerModal').classList.add('hidden')"
+                        class="rounded bg-gray-300 px-3 py-1">Cancel</button>
+                    <button type="submit" class="rounded bg-blue-600 px-3 py-1 text-white">Save</button>
+                </div>
+            </form>
         </div>
     </div>
 

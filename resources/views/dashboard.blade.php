@@ -93,24 +93,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Welcome Message -->
-        @if ($todayTransactions == 0)
-            <div class="rounded-lg border border-blue-200 bg-blue-50 p-6">
-                <div class="flex items-center">
-                    <svg class="mr-4 h-8 w-8 text-blue-600" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <div>
-                        <h4 class="text-lg font-semibold text-blue-900">Welcome!</h4>
-                        <p class="mt-1 text-blue-700">No transactions yet today. Start your first transaction by
-                            clicking "New Transaction" above.</p>
-                    </div>
-                </div>
-            </div>
-        @endif
     </div>
     </div>
 </x-app-layout>

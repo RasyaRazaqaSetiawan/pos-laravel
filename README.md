@@ -24,7 +24,6 @@ Project ini dibangun menggunakan **Laravel 12**, **TailwindCSS**, dan **MySQL**.
 | 5  | **Skema Diskon Otomatis**   | Diskon otomatis berdasarkan total belanja (≥500K → 10%, ≥1JT → 15%).                          | ✅ Done      |
 | 6  | **Manajemen Transaksi**     | Simpan transaksi + detail item, update stok otomatis setiap pembelian.                        | ✅ Done      |
 | 7  | **Riwayat Transaksi**       | Lihat daftar transaksi yang sudah dilakukan.                                                  | ✅ Done      |
-| 8  | **Print Invoice**           | Cetak nota transaksi.                                                                         | ⏳ On Progress |
 
 ---
 

@@ -26,13 +26,13 @@
                             <input type="text" name="search" value="{{ request('search') }}"
                                 placeholder="Search products..."
                                 class="flex-1 rounded-lg border border-gray-300 px-4 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-                            <input type="hidden" name="per_page" value="{{ request('per_page', 2) }}">
+                            <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
                             <button type="submit"
                                 class="rounded-lg bg-blue-500 px-6 py-2 font-medium text-white transition duration-200 hover:bg-blue-600">
                                 Search
                             </button>
                             @if (request('search'))
-                                <a href="{{ route('products.index', ['per_page' => request('per_page', 2)]) }}"
+                                <a href="{{ route('products.index', ['per_page' => request('per_page', 10)]) }}"
                                     class="rounded-lg bg-gray-500 px-4 py-2 text-white transition duration-200 hover:bg-gray-600">
                                     Clear
                                 </a>

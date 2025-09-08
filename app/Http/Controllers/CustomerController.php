@@ -46,13 +46,6 @@ class CustomerController extends Controller
 
         Customer::create($request->all());
 
-        // if($request->ajax()){
-        //     return response()->json([
-        //         'sucess' => true,
-        //         'message' => 'Customer created successfully'
-        //     ]);
-        // }
-
         return redirect()->route('customers.index')->with('success', 'Customer created successfully');
     }
 

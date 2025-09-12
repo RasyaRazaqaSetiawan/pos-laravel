@@ -221,7 +221,7 @@
     </div>
 
     <!-- Modal Add Customer -->
-    <div id="addCustomerModal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50">
+    <div id="addCustomerModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
         <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
             <h3 class="mb-4 text-lg font-bold">Add New Customer</h3>
 

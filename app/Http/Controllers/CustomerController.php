@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
+// Class
 class CustomerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource/Method.
      */
     public function index(Request $request)
     {
+        // Property
         $search = $request->get('search');
 
         $customers = Customer::when($search, function ($query) use ($search) {
@@ -22,7 +24,7 @@ class CustomerController extends Controller
             ->withCount('transactions')
             ->paginate(10);
 
-        return view('customers.index', compact('customers'));
+        return view('Customers.index', compact('customers'));
     }
 
     /**
@@ -30,7 +32,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return view('customers.create');
+        return view('Customers.create');
     }
 
     /**
@@ -44,7 +46,12 @@ class CustomerController extends Controller
             'email' => 'nullable|email|unique:customers,email',
         ]);
 
-        Customer::create($request->all());
+        // Store Object
+        $customer = new Customer();
+        $customer->full_name = $request->full_name;
+        $customer->phone = $request->phone;
+        $customer->email = $request->email;
+        $customer->save();
 
         return redirect()->route('customers.index')->with('success', 'Customer created successfully');
     }
@@ -54,7 +61,7 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
-        return view('customers.edit', compact('customer'));
+        return view('Customers.edit', compact('customer'));
     }
 
     /**

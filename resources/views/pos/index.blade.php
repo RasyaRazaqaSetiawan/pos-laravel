@@ -66,7 +66,7 @@
                                                 </p>
                                                 <!-- Out of Stock Overlay -->
                                                 <div
-                                                    class="out-of-stock-overlay absolute inset-0 flex hidden items-center justify-center rounded-lg bg-gray-900 bg-opacity-50">
+                                                    class="out-of-stock-overlay absolute inset-0 hidden items-center justify-center rounded-lg bg-gray-900 bg-opacity-50">
                                                     <span class="text-sm font-bold text-white">OUT OF STOCK</span>
                                                 </div>
                                             </div>

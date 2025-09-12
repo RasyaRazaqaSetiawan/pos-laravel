@@ -34,7 +34,7 @@
 
                                 <!-- Products Grid -->
                                 <div id="products-grid"
-                                    class="grid max-h-96 grid-cols-2 gap-4 overflow-y-auto md:grid-cols-3 xl:grid-cols-4">
+                                    class="grid h-[calc(100vh-220px)] grid-cols-2 gap-4 overflow-y-auto md:grid-cols-3 xl:grid-cols-4">
                                     @foreach ($products as $product)
                                         <div id="product-{{ $product->id }}"
                                             class="product-card cursor-pointer rounded-lg border bg-white p-4 shadow-sm transition hover:shadow-md"
@@ -65,8 +65,9 @@
                                                     Stock: <span class="stock-number">{{ $product->stock }}</span>
                                                 </p>
                                                 <!-- Out of Stock Overlay -->
-                                                <div class="out-of-stock-overlay hidden absolute inset-0 bg-gray-900 bg-opacity-50 rounded-lg flex items-center justify-center">
-                                                    <span class="text-white text-sm font-bold">OUT OF STOCK</span>
+                                                <div
+                                                    class="out-of-stock-overlay absolute inset-0 flex hidden items-center justify-center rounded-lg bg-gray-900 bg-opacity-50">
+                                                    <span class="text-sm font-bold text-white">OUT OF STOCK</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -78,7 +79,7 @@
 
                         <!-- Cart Section -->
                         <div class="lg:col-span-1">
-                            <div class="rounded-lg bg-gray-50 p-4">
+                            <div class="flex h-[calc(100vh-150px)] flex-col rounded-lg bg-white p-4 shadow">
                                 <h3 class="mb-4 text-lg font-medium text-gray-900">Order Summary</h3>
 
                                 <!-- Customer Selection -->
@@ -101,8 +102,8 @@
                                 </div>
 
                                 <!-- Cart Items -->
-                                <div class="mb-4">
-                                    <div id="cart-items" class="max-h-64 space-y-2 overflow-y-auto">
+                                <div class="mb-4 flex-1 overflow-y-auto">
+                                    <div id="cart-items" class="space-y-2">
                                         <div id="empty-cart" class="py-8 text-center text-gray-500">
                                             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
@@ -188,37 +189,31 @@
                 const productId = this.dataset.id;
                 const productName = this.dataset.name;
                 const productPrice = parseInt(this.dataset.price);
-                const currentStock = parseInt(this.dataset.stock);
 
-                // Check if product is out of stock
-                if (currentStock <= 0) {
-                    alert('Product is out of stock!');
-                    return;
-                }
-
-                // Check if product already in cart
+                const maxStock = originalStock[productId];
                 const existingItem = cart.find(item => item.product_id === productId);
 
                 if (existingItem) {
-                    if (existingItem.quantity < currentStock) {
+                    if (existingItem.quantity < maxStock) {
                         existingItem.quantity += 1;
-                        // Update stock display
-                        updateProductStock(productId, currentStock - 1);
+                        updateProductStock(productId, maxStock - existingItem.quantity);
                         updateCartDisplay();
                     } else {
                         alert('Insufficient stock!');
                     }
                 } else {
-                    cart.push({
-                        product_id: productId,
-                        name: productName,
-                        price: productPrice,
-                        quantity: 1,
-                        stock: currentStock
-                    });
-                    // Update stock display
-                    updateProductStock(productId, currentStock - 1);
-                    updateCartDisplay();
+                    if (maxStock > 0) {
+                        cart.push({
+                            product_id: productId,
+                            name: productName,
+                            price: productPrice,
+                            quantity: 1
+                        });
+                        updateProductStock(productId, maxStock - 1);
+                        updateCartDisplay();
+                    } else {
+                        alert('Product is out of stock!');
+                    }
                 }
             });
         });
@@ -284,7 +279,7 @@
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 3h2l.4 2M7 13h10l4-8H5.4m3.6 8L9 21m0 0H7m2 0h2
-                           m6-8a2 2 0 11-4 0 2 2 0 014 0z">
+                        m6-8a2 2 0 11-4 0 2 2 0 014 0z">
                     </path>
                 </svg>
                 <p class="mt-2">Cart is empty</p>
@@ -426,30 +421,6 @@
                 return;
             }
         });
-
-        // Page unload warning if cart has items
-        window.addEventListener('beforeunload', function(e) {
-            if (cart.length > 0) {
-                const confirmationMessage = 'You have items in your cart. Are you sure you want to leave?';
-                e.returnValue = confirmationMessage;
-                return confirmationMessage;
-            }
-        });
-
-        // Optional: Add keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Clear cart with Ctrl+X
-            if (e.ctrlKey && e.key === 'x') {
-                e.preventDefault();
-                document.getElementById('clear-cart').click();
-            }
-
-            // Focus search with Ctrl+F
-            if (e.ctrlKey && e.key === 'f') {
-                e.preventDefault();
-                document.getElementById('product-search').focus();
-            }
-        });
     </script>
 
     <style>
@@ -481,8 +452,15 @@
 
         /* Low stock warning animation */
         @keyframes pulse-orange {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
         }
 
         .text-orange-500 {
